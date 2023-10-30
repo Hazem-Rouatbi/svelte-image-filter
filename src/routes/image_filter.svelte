@@ -3,14 +3,22 @@
 	import FilterMatrix from './filter_matrix.svelte';
 
 	export let input_url;
+	let options = [
+		{ value: 'contrast', title: 'Contrast' },
+		{ value: 'pixel_sorter', title: 'Pixel Sorter' },
+		{ value: 'pixel_sorter_vert', title: 'Pixel Sorter Vertical' }
+	];
+	let selection = false;
 	let image;
 	let canvas;
 	let input_div;
 	let outCanv;
-	let value = 'contrast';
+	let title = options[1].title;
+	let value = options[1].value;
 	let outImgDat;
 	let inpContxt;
 	let outContxt;
+	let outUrl =input_url;
 	let imagedata;
 	let contThres = 100;
 	let sortMinThresh = 100;
@@ -86,7 +94,7 @@
 		for (let i = 1; i < pixelArray.length - 1; i++) {
 			for (let j = 1; j < pixelArray[i].length - 1; j++) {
 				for (let k = 0; k < 3; k++) {
-					const val = (pixelArray[i][j][k]*monoArray[i][j])/255
+					const val = (pixelArray[i][j][k]+monoArray[i][j])/2
 					pixelArray[i][j][k] = Math.min(Math.max(val, 0), 255);
 				}
 			}
@@ -189,14 +197,15 @@
 		outImgDat = new ImageData(pixdat, outCanv.width);
 		outContxt.putImageData(outImgDat, 0, 0);
 		outImgDat = undefined;
+		outUrl = outCanv.toDataURL('image/png')
 	}
 
 	function setupOutput() {
 		const rgbaPixelArray = get2DArray(imagedata, canvas.width);
 		let filteredArray;
 		if (value == 'filter') {
-			const monoArray = blackAndWhite(rgbaPixelArray)
-			applyFilter(rgbaPixelArray,monoArray);
+			const monoArray = blackAndWhite(rgbaPixelArray);
+			applyFilter(rgbaPixelArray, monoArray);
 			return;
 		} else if (value == 'contrast') {
 			filteredArray = applyContrast(rgbaPixelArray, contThres);
@@ -265,6 +274,7 @@
 		return chunks;
 	}
 */
+
 	function splitWork_sorting(array, orig, n) {
 		let chunks = [];
 		let origChunks = [];
@@ -279,22 +289,37 @@
 		filterMatEn = false;
 		setupOutput();
 	}
+
 </script>
 
 <div class="input" bind:this={input_div}>
-	<select
-		on:change={(ev) => {
-			value = ev.target.value;
-			console.log(value);
-			setupOutput();
-		}}
-		id="type"
-	>
-		<!--<option value="filter" selected>filter</option>-->
-		<option value="contrast">contrast</option>
-		<option value="pixel_sorter">Pixel Sorter</option>
-		<option value="pixel_sorter_vert">Pixel Sorter Vertical</option>
-	</select>
+	<fieldset class="custom-select" on:click={() => {
+		selection = !selection;
+	}}>
+		<legend id="type">Select filter</legend>
+		<div
+			
+		>
+			<p class="selected">{title}</p>
+			{#if selection}
+			<div class="options">
+
+				{#each options as opt}
+				<div class="option"
+				on:click={() => {
+					value = opt.value;
+					title = opt.title;
+					setupOutput();
+				}}
+					>
+					{opt.title}
+				</div>
+				{/each}
+			</div>
+				{/if}
+		</div>
+	</fieldset>
+
 	{#if value == 'filter' && filterMatEn}
 		<FilterMatrix bind:matrix={filter} />
 		<button on:click={refilter}>Apply</button>
@@ -346,8 +371,11 @@
 			</label>
 		</div>
 	{/if}
-	<canvas bind:this={canvas} willReadFrequently="true" />
-	<canvas bind:this={outCanv} willReadFrequently="true" />
+	<div class="canvases">
+		<canvas bind:this={canvas} willReadFrequently="true" />
+		<canvas bind:this={outCanv} willReadFrequently="true" />
+	</div>
+	<a href={outUrl} download='{Date.now()}-Output.png'>Download Image</a>
 
 	<!-- svelte-ignore a11y-missing-attribute -->
 	<img
@@ -356,28 +384,65 @@
 		on:load={() => {
 			setupCanvas();
 			setupOutput();
+			image.style.display='none';
 		}}
 	/>
 </div>
 
 <style>
+
+	fieldset{
+		border-radius: 20px;
+	}
 	.sliders {
 		text-align: center;
 		vertical-align: middle;
+		min-width: 200px;
+	}
+	.custom-select{
+		cursor: pointer;
+		margin: 10px;
+	}
+	.options{
+		margin: 5px;
+		border: 1px solid var(--neon-col);
+		border-radius: 20px;
+	}
+	a{
+		color: white;
+		padding: 3px 6px;
+		margin: 5px;
+		border-radius: 5px;
+	}
+	.option{
+		padding: 3px 6px;
+		margin: 5px;
+		border-radius: 20px;
+		background :none;
+	}
+	a:hover,.option:hover{
+		background: var(--neon-col);
 	}
 	.input {
 		display: flex;
-		flex-direction: column;
 		flex-wrap: wrap;
 		text-align: center;
 		align-items: center;
-		justify-content: center;
-	}
+		flex-direction: column;
+
+}
 	img {
 		visibility: hidden;
 		position: absolute;
 		top: 0;
 		left: 0;
+	}
+	.canvases{
+		justify-content: center;
+		display: grid;
+		grid-template-columns: 40% 40%;
+		column-gap: 5px;
+
 	}
 	canvas {
 		max-width: 100%;

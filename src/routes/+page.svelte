@@ -10,7 +10,6 @@
 	let input_label = 'Drag and drop a file or  Choose a file ...';
 	let ready=false;
 </script>
-
 <div class="big-cont">
 	<label
 		class="file-input"
@@ -56,6 +55,7 @@
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
+		flex: content;
 		padding: 10px;
 		border-radius: 10px;
 	}

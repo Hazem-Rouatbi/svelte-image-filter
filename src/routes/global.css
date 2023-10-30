@@ -1,3 +1,6 @@
+:root{
+    --neon-col:#90dfff;
+}
 body {
     height: 100%;
     padding: 0;
@@ -13,11 +16,50 @@ body {
 a{
     all: unset;
     cursor: pointer;
-    color: var(--neon-color)
+    color: var(--neon-col)
 }
 p{
     background: none;
     margin: 0;
     padding: 0;
     border: none;
+}
+input[type='range'] {
+    appearance: none;
+    background: transparent;
+    outline: var(--neon-col);
+    cursor: pointer;
+    border: 2px solid var(--neon-col);
+    border-radius: 20px;
+    color: transparent;
+}
+
+select{
+    border-radius: 20px;
+    background: rgb(146, 252, 252);
+}
+
+
+input[type='range']::-ms-thumb {
+    -ms-progress-appearance: none;
+    height: 15px;
+    width: 15px;
+    border-radius: 5px;
+    border: 2px solid #fff;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 15px;
+    width: 15px;
+    border-radius: 5px;
+    border: 2px solid #fff;
+}
+
+input[type='range']::-moz-range-thumb {
+    -moz-appearance: none;
+    height: 15px;
+    width: 15px;
+    border-radius: 5px;
+    border: 2px solid #fff;
 }
