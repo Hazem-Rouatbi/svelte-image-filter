@@ -1,0 +1,23 @@
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: 'Tilt Neon', sans-serif;
+    font-size: medium;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+a{
+    all: unset;
+    cursor: pointer;
+    color: var(--neon-color)
+}
+p{
+    background: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
