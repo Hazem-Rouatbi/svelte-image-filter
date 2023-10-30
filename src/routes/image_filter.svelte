@@ -293,6 +293,8 @@
 </script>
 
 <div class="input" bind:this={input_div}>
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<fieldset class="custom-select" on:click={() => {
 		selection = !selection;
 	}}>
@@ -304,7 +306,11 @@
 			{#if selection}
 			<div class="options">
 
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				{#each options as opt}
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="option"
 				on:click={() => {
 					value = opt.value;
